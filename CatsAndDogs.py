@@ -24,7 +24,6 @@ while True:
     """
     MyModel = keras.models.load_model('model.h5')
     prediction = MyModel.predict(np.array([resized_image]))
-    print("Prediction Value:", prediction)
     animal = Label(prediction)
 
     """Show Output

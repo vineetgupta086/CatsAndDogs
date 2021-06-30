@@ -1,3 +1,5 @@
+import numpy as np
+
 def Label(val):
     """Returns the label of the prediction
 
@@ -8,10 +10,11 @@ def Label(val):
         str: 'cat'/'dog'
     """
     x = val[0][0]
-    try:
-        if x > 0:
-            return 'Dog'
-        elif x < 0:
-            return 'Cat'
-    except ValueError as ve:
-        print(f'You inserted an image which is neither a cat or a dog.')
+    x = np.round(x,3)
+    
+    if x > 0:
+        y = 'Dog'
+    elif x < 0:
+        y = 'Cat'
+    print(f"Prediction Value: {x}")
+    return f'Prediction: {y}'
