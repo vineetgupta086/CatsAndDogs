@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tensorflow.python.ops.gen_string_ops import AsString
 
-def ShowIm(image, label):
+def ShowIm(image, label, val = False):
     """Displays image
 
     Args:
@@ -10,7 +10,14 @@ def ShowIm(image, label):
         label (string): String object predicted by the model
     """
     #img = plt.imread(image_loc)
+    x = val[0][0]
     plt.figure()
     plt.imshow(image)
-    plt.title(label = label)
+    if val:
+        if x<0:
+            plt.title(label = f"{label}({np.round(x)})")
+        else:
+            plt.title(label = f"{label}(+{np.round(x)})")
+    else:
+        plt.title(label = label)
     plt.show()
