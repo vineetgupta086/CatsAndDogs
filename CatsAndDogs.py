@@ -33,7 +33,7 @@ while True:
 
     """Model and Predictions  
     """
-    MyModel = keras.models.load_model('model.h5')
+    MyModel = keras.models.load_model('source/model.h5')
     prediction = MyModel.predict(np.array([ResizedImg]))
     animal = Label(prediction)
 
