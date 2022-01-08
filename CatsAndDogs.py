@@ -13,7 +13,7 @@ while True:
     arg = input('Input:')
     if arg == '1':
         temp = np.random.randint(low = 1, high = 79, size = 1)
-        with open("path.txt") as MyFile:
+        with open("TextData.txt") as MyFile:
             Path = MyFile.readlines() 
         MyFile.close()
         ImageLoc = str(Path[0]+str(temp[0])+'.jpg')
