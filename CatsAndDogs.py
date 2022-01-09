@@ -1,5 +1,6 @@
 from os import cpu_count
 import tkinter as tk
+from tkinter import filedialog
 from tkinter.constants import CURRENT, DISABLED
 
 import matplotlib.pyplot as plt
@@ -40,6 +41,9 @@ def DocFrame(path = "source/TextData.txt"):
 DocFrame()
 
 def Predict(path):
+    """This function takes path as an input and makes the prediction.
+    This is used in the Lite version as well.
+    """
     try:
         Image = plt.imread(path)
     except ValueError:
@@ -61,7 +65,11 @@ def Predict(path):
 def Main(path = "source/TextData.txt"):
     """This is going to contain the main functionality of the program.
     """
-    global EntryText
+    MainFrame = tk.LabelFrame(root, text = "What it needs is an image", padx = 5, pady = 5, fg = white, bg = dark)
+    #MainFrame.grid(row = 2, column = 0, columnspan= 3, rowspan = 1)
+    MainFrame.place(x = 55, y = 275)
+
+    #Method 1: computer selects a random image
     def RandImg():
         temp = np.random.randint(low = 1, high = 79, size = 1)
         with open(path) as MyFile:
@@ -69,22 +77,24 @@ def Main(path = "source/TextData.txt"):
         MyFile.close()
         Predict(f"{ImgLoc[5]}"+str(temp[0])+".jpg")
 
-    MainFrame = tk.LabelFrame(root, text = "What it needs is an image", padx = 5, pady = 5, fg = white, bg = dark)
-    
-    #MainFrame.grid(row = 2, column = 0, columnspan= 3, rowspan = 1)
-    MainFrame.place(x = 55, y = 275)
-
-    Buttons = {1,2}
-    Labels = {1,2}
     #tk.Label(MainFrame, text = "Work in Progress", fg = white, bg = dark).pack()
     tk.Button(MainFrame, text = "Random Image", fg = white, bg = dark, command = RandImg).grid(row = 0, column = 0, columnspan= 3)
     tk.Label(MainFrame, text = str("-"*15 + "OR" + "-"*15), fg = "#808080", bg = dark).grid(row = 1, column = 0, columnspan = 3)
 
-    tk.Label(MainFrame, text = "you can type a path:", fg = white, bg = dark).grid(row = 2, column = 0, columnspan = 3)
+    #Method 2: User feeds a path to the computer in textual form
+    tk.Label(MainFrame, text = "You can even type a path:", fg = white, bg = dark).grid(row = 2, column = 0, columnspan = 3)
     EntryText = tk.Entry(MainFrame, fg = white, bg = "#353535", width= 60)
     EntryText.grid(row = 3, column = 0)
     tk.Label(MainFrame, text = "   ", fg = white, bg = dark).grid(row = 3, column = 2)
     tk.Button(MainFrame, text = "Insert", fg = white, bg = dark, command = lambda: Predict(EntryText.get()), padx = 5).grid(row = 3, column = 3)
+    tk.Label(MainFrame, text = str("-"*15 + "OR" + "-"*15), fg = "#808080", bg = dark).grid(row = 4, column = 0, columnspan = 3)
+
+    #Method 3: User selects an image through dialogue box
+    def Browse():
+        ImageLoc = filedialog.askopenfilename(initialdir= "D:/Vineet/work", title = "Select An Image:", filetypes= (("JPG Files", "*.jpg"), ("All Files", "*.*")))
+        Predict(ImageLoc)
+
+    tk.Button(MainFrame, text = "Browse this device", fg = white, bg = dark, command = Browse).grid(row = 5, column = 0, columnspan= 3)
 
 Main()
 root.mainloop()
