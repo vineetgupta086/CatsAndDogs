@@ -26,28 +26,65 @@ def DocFrame(path = "source/TextData.txt"):
     """
     DocFrame = tk.LabelFrame(root, width = 545, height = 75, text = "How it works", padx = 1, pady= 1, fg = white, bg = dark)
     DocFrame.grid(row = 1, column = 0, columnspan = 3, rowspan = 1)
+    
+    #Read instructions from external text file
     with open(path) as MyFile:
         TempData = MyFile.readlines()
     MyFile.close()
     j = 3; doc = ''
     for i in range(0,np.size(TempData)-2):
         temp = "\n" if j > 0 else ''
-        doc = str(doc + TempData[i+2]+temp)
+        doc = str(doc + TempData[i]+temp)
         j = j-1
-    print(np.size(TempData))
-    tk.Label(DocFrame, text = doc, padx = 0, pady= 0, fg = white, bg = dark).grid(row = 0+2, column= 0, columnspan= 3)
+    tk.Label(DocFrame, text = doc, padx = 0, pady= 0, fg = white, bg = dark).grid(row = 0, column= 0, columnspan= 3)
 DocFrame()
 
-def Main():
+def Predict(path):
+    try:
+        Image = plt.imread(path)
+    except ValueError:
+        print(f"No such file or directory:{path}")
+
+    ResizedImg = Resize(Image)
+
+    """Model and Predictions  
+    """
+    MyModel = keras.models.load_model('source/model.h5')
+    prediction = MyModel.predict(np.array([ResizedImg]))
+    animal = Label(prediction)
+
+    """Show Output
+    """
+    ShowIm(image = Image, label = animal, val = prediction)
+
+
+def Main(path = "source/TextData.txt"):
     """This is going to contain the main functionality of the program.
     """
-    MainFrame = tk.LabelFrame(root, text = "What it needs is an image", padx = 1, pady = 1, fg = white, bg = dark)
-    MainFrame.grid(row = 2, column = 0, columnspan= 3, rowspan = 1)
+    global EntryText
+    def RandImg():
+        temp = np.random.randint(low = 1, high = 79, size = 1)
+        with open(path) as MyFile:
+            ImgLoc = MyFile.readlines() 
+        MyFile.close()
+        Predict(f"{ImgLoc[5]}"+str(temp[0])+".jpg")
+
+    MainFrame = tk.LabelFrame(root, text = "What it needs is an image", padx = 5, pady = 5, fg = white, bg = dark)
+    
+    #MainFrame.grid(row = 2, column = 0, columnspan= 3, rowspan = 1)
+    MainFrame.place(x = 55, y = 275)
+
     Buttons = {1,2}
     Labels = {1,2}
     #tk.Label(MainFrame, text = "Work in Progress", fg = white, bg = dark).pack()
-    tk.Label(MainFrame, text = "you can type a path:", fg = white, bg = dark).grid(row = 0, column = 0, columnspan= 3)
-    temp = tk.Entry(MainFrame, fg = white, bg = "#353535", width= 50).grid(row = 1, column = 0, columnspan= 2)
-    tk.Button(MainFrame, text = "Insert", fg = white, bg = dark, command = lambda: 0, padx = 2).grid(row = 1, column = 2)
+    tk.Button(MainFrame, text = "Random Image", fg = white, bg = dark, command = RandImg).grid(row = 0, column = 0, columnspan= 3)
+    tk.Label(MainFrame, text = str("-"*15 + "OR" + "-"*15), fg = "#808080", bg = dark).grid(row = 1, column = 0, columnspan = 3)
+
+    tk.Label(MainFrame, text = "you can type a path:", fg = white, bg = dark).grid(row = 2, column = 0, columnspan = 3)
+    EntryText = tk.Entry(MainFrame, fg = white, bg = "#353535", width= 60)
+    EntryText.grid(row = 3, column = 0)
+    tk.Label(MainFrame, text = "   ", fg = white, bg = dark).grid(row = 3, column = 2)
+    tk.Button(MainFrame, text = "Insert", fg = white, bg = dark, command = lambda: Predict(EntryText.get()), padx = 5).grid(row = 3, column = 3)
+
 Main()
 root.mainloop()
