@@ -86,14 +86,13 @@ def Main(path = "source/TextData.txt"):
     EntryText = tk.Entry(MainFrame, fg = white, bg = "#353535", width= 60)
     EntryText.grid(row = 3, column = 0)
     tk.Label(MainFrame, text = "   ", fg = white, bg = dark).grid(row = 3, column = 2)
-    tk.Button(MainFrame, text = "Insert", fg = white, bg = dark, command = lambda: Predict(EntryText.get()), padx = 5).grid(row = 3, column = 3)
+    tk.Button(MainFrame, text = "Insert", fg = white, bg = dark, command = lambda: Predict(EntryText.get().strip()), padx = 5).grid(row = 3, column = 3)
     tk.Label(MainFrame, text = str("-"*15 + "OR" + "-"*15), fg = "#808080", bg = dark).grid(row = 4, column = 0, columnspan = 3)
 
     #Method 3: User selects an image through dialogue box
     def Browse():
         ImageLoc = filedialog.askopenfilename(initialdir= "D:/Vineet/work", title = "Select An Image:", filetypes= (("JPG Files", "*.jpg"), ("All Files", "*.*")))
         Predict(ImageLoc)
-
     tk.Button(MainFrame, text = "Browse this device", fg = white, bg = dark, command = Browse).grid(row = 5, column = 0, columnspan= 3)
 
 Main()
