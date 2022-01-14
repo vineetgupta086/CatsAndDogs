@@ -1,6 +1,7 @@
-1. Select a method to input any image in the program. Yup, "any".
+INSTRUCTIONS:
+1. Select a method to input any image in the program.
 2. The program shall return a prediction if it's a cat or a dog. Duh!
 3. A prediction magnitude is also thrown as a measure of confidence with a sign.
 4. The rest you'll figure out. That's it. Thank you.
 
-E:/Vineet/work/projects/dataset/data/CatsAndDogs/test/
+PATH: E:/Vineet/work/projects/dataset/data/CatsAndDogs/test/

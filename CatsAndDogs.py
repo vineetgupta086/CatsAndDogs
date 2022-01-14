@@ -1,4 +1,5 @@
 from os import cpu_count
+
 import tkinter as tk
 from tkinter import filedialog
 from tkinter.constants import CURRENT, DISABLED
@@ -7,7 +8,7 @@ import matplotlib.pyplot as plt
 from format import Resize
 import numpy as np
 from tensorflow import keras
-from ShowImage import ShowIm
+from ShowImage import ShowImage
 from GetLabel import Label
 from PIL import ImageTk, Image
 
@@ -22,47 +23,56 @@ ImgLabel.grid(row=0, column = 0, columnspan= 3)
 
 white = "#ffffff"; dark = "#282828"
 
-def DocFrame(path = "source/TextData.txt"):
+def DocumentFrame(TextFile = "source/TextData.txt"):
     """Just a way to softcode my instuctions to the user.
+        TextFile (string): takes an argument as string to the
+                        path of the text you want to display
     """
-    DocFrame = tk.LabelFrame(root, width = 545, height = 75, text = "How it works", padx = 1, pady= 1, fg = white, bg = dark)
-    DocFrame.grid(row = 1, column = 0, columnspan = 3, rowspan = 1)
+    DocumentFrame = tk.LabelFrame(root, width = 545, height = 75, text = "How it works", padx = 1, pady= 1, fg = white, bg = dark)
+    DocumentFrame.grid(row = 1, column = 0, columnspan = 3, rowspan = 1)
     
     #Read instructions from external text file
-    with open(path) as MyFile:
-        TempData = MyFile.readlines()
-    MyFile.close()
-    j = 3; doc = ''
-    for i in range(0,np.size(TempData)-2):
-        temp = "\n" if j > 0 else ''
-        doc = str(doc + TempData[i]+temp)
-        j = j-1
-    tk.Label(DocFrame, text = doc, padx = 0, pady= 0, fg = white, bg = dark).grid(row = 0, column= 0, columnspan= 3)
-DocFrame()
+    TextData = open(TextFile).readlines()
+    LineNumber = 0
+    for line in TextData:
+        if line.startswith("INSTRUCTIONS:"):
+            break
+        else: LineNumber = LineNumber + 1
 
-def Predict(path):
-    """This function takes path as an input and makes the prediction.
+    Instruc = ''
+    for i in range(LineNumber+1,LineNumber+5):
+        temp = "\n" if i < LineNumber + 4 else ''
+        Instruc = str(Instruc + TextData[i]+temp)
+        
+    tk.Label(DocumentFrame, text = Instruc.strip(), padx = 0, pady= 0, fg = white, bg = dark).grid(row = 0, column= 0, columnspan= 3)
+DocumentFrame()
+
+def Predict(ImagePath):
+    """This function makes the prediction.
     This is used in the Lite version as well.
+
+        path (string): Path to the image that needs to be examined
     """
     try:
-        Image = plt.imread(path)
+        Image = plt.imread(ImagePath)
     except ValueError:
-        print(f"No such file or directory:{path}")
+        print(f"No such file or directory: {ImagePath}")
+        #Error dialogue to be created
 
-    ResizedImg = Resize(Image)
+    ResizedImage = Resize(Image)
 
     """Model and Predictions  
     """
     MyModel = keras.models.load_model('source/model.h5')
-    prediction = MyModel.predict(np.array([ResizedImg]))
+    prediction = MyModel.predict(np.array([ResizedImage]))
     animal = Label(prediction)
 
     """Show Output
     """
-    ShowIm(image = Image, label = animal, val = prediction)
+    ShowImage(image = Image, label = animal, val = prediction)
 
 
-def Main(path = "source/TextData.txt"):
+def Main(TextFile = "source/TextData.txt"):
     """This is going to contain the main functionality of the program.
     """
     MainFrame = tk.LabelFrame(root, text = "What it needs is an image", padx = 5, pady = 5, fg = white, bg = dark)
@@ -70,15 +80,18 @@ def Main(path = "source/TextData.txt"):
     MainFrame.place(x = 55, y = 275)
 
     #Method 1: computer selects a random image
-    def RandImg():
+    def RandomImage():
+        TextData = open(TextFile).readlines()
+        for Line in TextData:
+            if Line.startswith("PATH:"):
+                ImagePath = Line[len("PATH:"):len(Line)].strip()
+                break
+
         temp = np.random.randint(low = 1, high = 79, size = 1)
-        with open(path) as MyFile:
-            ImgLoc = MyFile.readlines() 
-        MyFile.close()
-        Predict(f"{ImgLoc[5]}"+str(temp[0])+".jpg")
+        Predict(f"{ImagePath}"+str(temp[0])+".jpg")
 
     #tk.Label(MainFrame, text = "Work in Progress", fg = white, bg = dark).pack()
-    tk.Button(MainFrame, text = "Random Image", fg = white, bg = dark, command = RandImg).grid(row = 0, column = 0, columnspan= 3)
+    tk.Button(MainFrame, text = "Random Image", fg = white, bg = dark, command = RandomImage).grid(row = 0, column = 0, columnspan= 3)
     tk.Label(MainFrame, text = str("-"*15 + "OR" + "-"*15), fg = "#808080", bg = dark).grid(row = 1, column = 0, columnspan = 3)
 
     #Method 2: User feeds a path to the computer in textual form
@@ -94,6 +107,6 @@ def Main(path = "source/TextData.txt"):
         ImageLoc = filedialog.askopenfilename(initialdir= "D:/Vineet/work", title = "Select An Image:", filetypes= (("JPG Files", "*.jpg"), ("All Files", "*.*")))
         Predict(ImageLoc)
     tk.Button(MainFrame, text = "Browse this device", fg = white, bg = dark, command = Browse).grid(row = 5, column = 0, columnspan= 3)
-
 Main()
+
 root.mainloop()

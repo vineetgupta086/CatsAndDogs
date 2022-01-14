@@ -14,7 +14,8 @@ def Label(val):
     
     if x > 0:
         y = 'Dog'
+        print(f"Prediction Magnitude: +{x}")
     elif x < 0:
         y = 'Cat'
-    print(f"Prediction Value: {x}")
+        print(f"Prediction Magnitude: {x}")
     return f'Prediction: {y}'

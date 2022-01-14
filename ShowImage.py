@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tensorflow.python.ops.gen_string_ops import AsString
 
-def ShowIm(image, label, val = False):
+def ShowImage(image, label, val = False):
     """Displays image
 
     Args:
