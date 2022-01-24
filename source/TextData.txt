@@ -5,3 +5,5 @@ INSTRUCTIONS:
 4. The rest you'll figure out. That's it. Thank you.
 
 PATH: E:/Vineet/work/projects/dataset/data/CatsAndDogs/test/
+
+VERSION: 2.1

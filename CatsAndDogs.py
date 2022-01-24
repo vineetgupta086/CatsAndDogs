@@ -1,17 +1,21 @@
 from os import cpu_count
+#from functools import lru_cache
+import time
+
 
 import tkinter as tk
 from tkinter import filedialog
 from tkinter.constants import CURRENT, DISABLED
-
 import matplotlib.pyplot as plt
-from format import Resize
 import numpy as np
 from tensorflow import keras
-from ShowImage import ShowImage
-from GetLabel import Label
 from PIL import ImageTk, Image
 
+from format import Resize
+from ShowImage import ShowImage
+from GetLabel import Label
+
+start1 = time.time()
 root = tk.Tk()
 root.title("CatsAndDogs")
 root.iconbitmap("source/graphics/Icon_C&D.ico")
@@ -46,13 +50,17 @@ def DocumentFrame(TextFile = "source/TextData.txt"):
         
     tk.Label(DocumentFrame, text = Instruc.strip(), padx = 0, pady= 0, fg = white, bg = dark).grid(row = 0, column= 0, columnspan= 3)
 DocumentFrame()
+end1 = time.time()
+dur1 = end1 - start1
 
+#@lru_cache
 def Predict(ImagePath):
     """This function makes the prediction.
     This is used in the Lite version as well.
 
         path (string): Path to the image that needs to be examined
     """
+    start2 = time.time()
     try:
         Image = plt.imread(ImagePath)
     except ValueError:
@@ -66,12 +74,16 @@ def Predict(ImagePath):
     MyModel = keras.models.load_model('source/model.h5')
     prediction = MyModel.predict(np.array([ResizedImage]))
     animal = Label(prediction)
-
+    end2 = time.time()
+    print(f"Time to predict: {end2-start2}")
+    
     """Show Output
     """
     ShowImage(image = Image, label = animal, val = prediction)
+    
 
 
+start1 = time.time()
 def Main(TextFile = "source/TextData.txt"):
     """This is going to contain the main functionality of the program.
     """
@@ -88,7 +100,9 @@ def Main(TextFile = "source/TextData.txt"):
                 break
 
         temp = np.random.randint(low = 1, high = 79, size = 1)
+        
         Predict(f"{ImagePath}"+str(temp[0])+".jpg")
+        
 
     #tk.Label(MainFrame, text = "Work in Progress", fg = white, bg = dark).pack()
     tk.Button(MainFrame, text = "Random Image", fg = white, bg = dark, command = RandomImage).grid(row = 0, column = 0, columnspan= 3)
@@ -108,5 +122,8 @@ def Main(TextFile = "source/TextData.txt"):
         Predict(ImageLoc)
     tk.Button(MainFrame, text = "Browse this device", fg = white, bg = dark, command = Browse).grid(row = 5, column = 0, columnspan= 3)
 Main()
+end1 = time.time()
+dur1 += end1 - start1
+print(f"Time to render: {dur1}")
 
 root.mainloop()
