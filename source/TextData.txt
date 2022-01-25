@@ -6,4 +6,8 @@ INSTRUCTIONS:
 
 PATH: E:/Vineet/work/projects/dataset/data/CatsAndDogs/test/
 
-VERSION: 2.1
+VERSION: 2.2.0
+
+TEXTLINK: https://raw.githubusercontent.com/vineetgupta086/CatsAndDogs/main/source/TextData.txt
+
+REPOLINK: https://github.com/vineetgupta086/CatsAndDogs
