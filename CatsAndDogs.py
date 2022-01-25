@@ -29,10 +29,12 @@ class Main:
         global RootExists
         RootExists = True
         def CheckUpdates():
-            global RootExists
+            global RootExists; global MyVersion
             
-            #MyVersion = FindFromFile("VERSION", MyTextFile)
+            # MyVersion = FindFromFile("VERSION", MyTextFile)
+            
             ProgVersion = FindInText("VERSION", requests.get(FindFromFile("TEXTLINK", MyTextFile)).text)
+            
             if int(VersionValue(MyVersion)) < int(VersionValue(ProgVersion)):
                 
                 MyMsg = f"CatsAndDogs v{ProgVersion} available. Do you want to update?\nClick 'Yes' to go the repository for latest version."
@@ -48,7 +50,7 @@ class Main:
                         parent.destroy()
                     except Exception as e:
                         messagebox.showerror("Software update", "An error occured during the update: {e}")
-            else:
+            elif int(VersionValue(MyVersion)) == int(VersionValue(ProgVersion)):
                 messagebox.showinfo(f"CatsAndDogs v{MyVersion}", "You are currently using the latest version.")
 
         CheckUpdates()

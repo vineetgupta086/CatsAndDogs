@@ -19,4 +19,6 @@ def FindFromFile(s, file):
 
 def FindInText(s, text):
     Line = text[text.find(s):len(text)]
-    return Line[len(s)+1:len(Line)].strip() #added 1 for colon
+    Line = Line[len(s)+1:len(Line)]
+    Line = Line[0:Line.find("\n")]
+    return Line.strip() #added 1 for colon
